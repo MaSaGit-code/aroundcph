@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copenhagen Weekend — Thu–Sun</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --ink: #1a1a1a;
+    --rust: #b84a2e;
+    --sage: #5a7a5e;
+    --gold: #c9a84c;
+    --muted: #8a8278;
+    --card: #fdfaf4;
+    --border: #d6cfc0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  header {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 48px 32px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 220px; height: 220px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 40px;
+    width: 140px; height: 140px;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+
+  .header-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    line-height: 1.1;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .header-sub {
+    font-size: 11px;
+    color: rgba(245,240,232,0.5);
+    letter-spacing: 0.1em;
+    margin-top: 12px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 16px 32px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-food { background: var(--rust); }
+  .dot-walk { background: var(--sage); }
+  .dot-culture { background: var(--gold); }
+  .dot-evening { background: #6b5b8e; }
+
+  main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .day-block {
+    margin-top: 40px;
+  }
+
+  .day-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .day-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+
+  .day-date {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 0;
+  }
+
+  .entry {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 0 20px;
+    margin-bottom: 4px;
+  }
+
+  .entry-time {
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    padding-top: 18px;
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  .entry-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 14px 16px;
+    position: relative;
+    margin-bottom: 6px;
+  }
+
+  .entry-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 16px;
+    width: 3px; height: calc(100% - 32px);
+    border-radius: 0 2px 2px 0;
+  }
+
+  .tag-food .entry-card::before { background: var(--rust); }
+  .tag-walk .entry-card::before { background: var(--sage); }
+  .tag-culture .entry-card::before { background: var(--gold); }
+  .tag-evening .entry-card::before { background: #6b5b8e; }
+
+  .entry-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    line-height: 1.3;
+  }
+
+  .entry-desc {
+    font-size: 11px;
+    line-height: 1.7;
+    color: #3a3530;
+  }
+
+  .entry-meta {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+
+  .badge-free { background: #e8f0e9; color: var(--sage); }
+  .badge-cheap { background: #fef3e2; color: #a06010; }
+  .badge-mid { background: #f3ede8; color: #8a4030; }
+  .badge-tip { background: #f0edf6; color: #5a4880; font-style: italic; }
+
+  .connector {
+    grid-column: 2;
+    height: 8px;
+    display: flex;
+    align-items: center;
+    padding-left: 16px;
+  }
+
+  .connector::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 100%;
+    background: var(--border);
+    margin: 0 auto 0 0;
+  }
+
+  .section-note {
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 3px;
+    padding: 12px 16px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    line-height: 1.8;
+    margin: 24px 0 0 92px;
+  }
+
+  .section-note strong {
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  footer {
+    max-width: 800px;
+    margin: 48px auto 0;
+    padding: 20px 20px 0;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    line-height: 1.8;
+  }
+
+  @media (max-width: 500px) {
+    header { padding: 32px 20px 28px; }
+    .legend { padding: 12px 20px; }
+    .entry { grid-template-columns: 58px 1fr; gap: 0 12px; }
+    .entry-time { font-size: 9px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">Weekend Guide · Thu 14 – Sun 17 May</div>
+  <h1>Copenhagen<br><em>for a first-timer</em></h1>
+  <div class="header-sub">Relaxed · Budget-conscious · Food-forward</div>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot dot-food"></div> Food &amp; drink</div>
+  <div class="legend-item"><div class="dot dot-walk"></div> Walk &amp; explore</div>
+  <div class="legend-item"><div class="dot dot-culture"></div> Sights</div>
+  <div class="legend-item"><div class="dot dot-evening"></div> Evening</div>
+</div>
+
+<main>
+
+  <!-- THURSDAY -->
+  <div class="day-block">
+    <div class="day-header">
+      <div class="day-label">Thursday</div>
+      <div class="day-date">Arrival day — easy landing</div>
+    </div>
+    <div class="timeline">
+
+      <div class="entry tag-walk">
+        <div class="entry-time">14:30 –<br>17:00</div>
+        <div class="entry-card">
+          <div class="entry-title">First city walk: Kongens Nytorv → Strøget → Rådhuspladsen</div>
+          <div class="entry-desc">Drop bags and head straight out. Start at Kongens Nytorv — one of the grandest squares in the city — then follow Strøget west all the way to Rådhuspladsen. Not for shopping, just to feel the city's main artery on foot. Grab a pølse (hot dog) from one of the street carts along the way — he hasn't had lunch and this is as Copenhagen as it gets for a quick bite.</div>
+          <div class="entry-meta">
+            <span class="badge badge-free">Free</span>
+            <span class="badge badge-cheap">Hot dog ~40 DKK</span>
+            <span class="badge badge-tip">Tip: go for the røde pølse med det hele — the classic red sausage with all the toppings</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry tag-walk">
+        <div class="entry-time">17:00 –<br>19:00</div>
+        <div class="entry-card">
+          <div class="entry-title">Home — rest</div>
+          <div class="entry-desc">Back to Islands Brygge for 1–2 hours. Long travel days are tiring. No guilt, no rushing.</div>
+          <div class="entry-meta">
+            <span class="badge badge-free">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry tag-food">
+        <div class="entry-time">19:30 –<br>late</div>
+        <div class="entry-card">
+          <div class="entry-title">Dinner: Reffen Street Food</div>
+          <div class="entry-desc">A short trip to Refshaleøen — the old naval island just across the water — for Reffen, Copenhagen's best street food market. 50+ stalls: Nepalese, Vietnamese, French, Danish, Caribbean. Grab whatever looks good, pick up a craft beer, and sit outside by the water. Open until 10pm on Thursdays. Low effort, great vibe, no reservation needed. From Islands Brygge take bus 9A or it's a pleasant 20-min bike ride around the harbour.</div>
+          <div class="entry-meta">
+            <span class="badge badge-cheap">Meal + drink ~130–180 DKK pp</span>
+            <span class="badge badge-tip">Tip: fire pits outside — warm even on a cooler May evening</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FRIDAY -->
+  <div class="day-block">
+    <div class="day-header">
+      <div class="day-label">Friday</div>
+      <div class="day-date">Harbour north + Kødbyen evening</div>
+    </div>
+    <div class="timeline">
+
+      <div class="entry tag-food">
+        <div class="entry-time">10:00 –<br>10:45</div>
+        <div class="entry-card">
+          <div class="entry-title">Breakfast: Andersen Bakery</div>
+          <div class="entry-desc">Right on your doorstep in Islands Brygge. Excellent pastries — go for the cardamom bun or the miso caramel knot. Coffee is good too. Gets busy so arrive at opening and take your time.</div>
+          <div class="entry-meta">
+            <span class="badge badge-cheap">~80–100 DKK pp</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry tag-culture">
+        <div class="entry-time">11:00 –<br>13:00</div>
+        <div class="entry-card">
+          <div class="entry-title">Harbour walk north: Nyhavn → Amalienborg → Little Mermaid → Kastellet</div>
+          <div class="entry-desc">A single flowing walk northward along the harbour. Start at <strong>Nyhavn</strong> — walk the north quay for the classic photo, the south quay if you want to sit with a drink. Continue to <strong>Amalienborg Palace</strong> — the royal residence, four identical palaces around an octagonal square. If you time it at noon you'll catch the changing of the guard. Then follow the waterfront to the <strong>Little Mermaid</strong> (small but iconic — manage expectations). Right next to it is <strong>Kastellet</strong>, a beautifully preserved 17th-century star-shaped fortress — still active military but open to walkers. One of the most photogenic and peaceful spots in the city, almost nobody mentions it.</div>
+          <div class="entry-meta">
+            <span class="badge badge-free">All free</span>
+            <span class="badge badge-tip">Tip: Kastellet is the hidden gem here — the moat walk around the ramparts takes 20 min and is worth every step</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry tag-food">
+        <div class="entry-time">13:00 –<br>14:30</div>
+        <div class="entry-card">
+          <div class="entry-title">Lunch: Rufino Panini</div>
+          <div class="entry-desc">Head back south for lunch at Rufino Panino — an Italian sandwich spot with quality ingredients and combinations you won't find elsewhere. Pairs perfectly with wine if the mood calls for it. Located in Sydhavn, close to Islands Brygge, so you can swing home briefly before the afternoon if needed.</div>
+          <div class="entry-meta">
+            <span class="badge badge-cheap">~120–160 DKK pp</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry tag-walk">
+        <div class="entry-time">15:00 –<br>17:00</div>
+        <div class="entry-card">
+          <div class="entry-title">Afternoon: rest or free wander</div>
+          <div class="entry-desc">A natural break before the evening. Islands Brygge harbour front is lovely in May afternoon light if you just want to sit outside. Or a short walk around the neighbourhood.</div>
+          <div class="entry-meta">
+            <span class="badge badge-free">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry tag-evening">
+        <div class="entry-time">18:00 –<br>late</div>
+        <div class="entry-card">
+          <div class="entry-title">Evening: Kødbyen — Burgerfest + drinks + minigolf</div>
+          <div class="entry-desc">Head to the Meatpacking District for the full Friday night. Start with burgers at <strong>Burgerfest</strong> — no-nonsense, good quality, right in the thick of Kødbyen's energy. Then drinks: <strong>Fermentoren</strong> next door has 24 craft taps and knowledgeable staff, or <strong>ÅBEN</strong> for their own brewery. Cap the night with a round of minigolf at <strong>Camping, Boltens Gård</strong> — a bar + minigolf spot just a short walk away near Kongens Nytorv, open until midnight. Drinks, laughs, no rush.</div>
+          <div class="entry-meta">
+            <span class="badge badge-mid">Burgers ~150–200 DKK pp</span>
+            <span class="badge badge-cheap">Beer ~70–90 DKK</span>
+            <span class="badge badge-cheap">Minigolf ~100–130 DKK pp incl. drink</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SATURDAY -->
+  <div class="day-block">
+    <div class="day-header">
+      <div class="day-label">Saturday</div>
+      <div class="day-date">City sights + Torvehallerne + evening out</div>
+    </div>
+    <div class="timeline">
+
+      <div class="entry tag-food">
+        <div class="entry-time">10:00 –<br>10:45</div>
+        <div class="entry-card">
+          <div class="entry-title">Breakfast: Andersen Bakery</div>
+          <div class="entry-desc">Same routine, equally good the second time. Saturday morning has a different, more relaxed energy — take your time.</div>
+          <div class="entry-meta">
+            <span class="badge badge-cheap">~80–100 DKK pp</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry tag-walk">
+        <div class="entry-time">11:00 –<br>12:45</div>
+        <div class="entry-card">
+          <div class="entry-title">Morning: Christiania</div>
+          <div class="entry-desc">Cross to Christianshavn and walk into <strong>Freetown Christiania</strong> — a self-governing commune since 1971, completely unique in Europe. Walk the main drag, see the community gardens, DIY architecture, open-air cafés. Respectful, calm visit — it's a living community, not a tourist attraction. No photography on Pusher Street. Free to enter and wander.</div>
+          <div class="entry-meta">
+            <span class="badge badge-free">Free to enter</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry tag-food">
+        <div class="entry-time">13:00 –<br>14:30</div>
+        <div class="entry-card">
+          <div class="entry-title">Lunch: Smørrebrød at Torvehallerne</div>
+          <div class="entry-desc"><strong>Hallernes Smørrebrød</strong> inside Torvehallerne — the quintessential Danish lunch. Open-faced rye bread with classic toppings: roast beef with remoulade and fried onions, herring, smoked salmon, fried fish cake. Order 2–3 pieces each. Browse the other stalls after — fresh fish, cheese, spices, pastries. One of the best food markets in Scandinavia.</div>
+          <div class="entry-meta">
+            <span class="badge badge-mid">~130–180 DKK for 2–3 pieces</span>
+            <span class="badge badge-tip">Tip: Torvehallerne closes at 18:00 on Saturdays — lunch timing is ideal</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry tag-culture">
+        <div class="entry-time">15:00 –<br>17:30</div>
+        <div class="entry-card">
+          <div class="entry-title">Afternoon walk: Rosenborg Castle gardens → Christiansborg → Black Diamond</div>
+          <div class="entry-desc">Start at <strong>Kongens Have</strong> — the public gardens around Rosenborg Castle, one of the most beautiful parks in the city in May. Walk around the castle exterior (red brick, Renaissance towers, moat). Then head south through the old city to <strong>Christiansborg Palace</strong> — the seat of Danish parliament, on its own island. Walk around the exterior and across the canal bridges. End at the <strong>Black Diamond</strong> (Det Kongelige Bibliotek) — a striking black glass extension cantilevered over the harbour. Free to walk inside: stunning atrium, canal views, good café.</div>
+          <div class="entry-meta">
+            <span class="badge badge-free">All free (exteriors + Black Diamond interior)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry tag-evening">
+        <div class="entry-time">19:30 –<br>late</div>
+        <div class="entry-card">
+          <div class="entry-title">Saturday evening — pick your vibe</div>
+          <div class="entry-desc">Several good options depending on energy and mood:
+            <br><br><strong>① Nørrebro bar crawl</strong> — the most local option. <strong>Pompette</strong> on Mølegade for natural/orange wine and snacks, then drift along Ravnsborggade and Elmegade. Genuinely Copenhagen, zero tourists. Best overall pick.
+            <br><br><strong>② Vesterbro / Istedgade</strong> — grittier, more mixed crowd, spontaneous. Good if you want something with more edge and less curation.
+            <br><br><strong>③ Back to Kødbyen for drinks only</strong> — familiar territory after Friday. Fermentoren or ÅBEN, easy and reliable. Slightly repetitive but low effort if Friday ran late.
+            <br><br><strong>④ Tivoli evening</strong> — if he wants a proper "experience". Lit up beautifully at night, lively on Saturdays. More structured than a bar night but genuinely impressive. Worth it if energy is high.
+            <br><br><strong>⑤ Islands Brygge harbour front</strong> — grab beers, sit by the water at home base. Effortless. Perfect if Saturday has been packed and you want to wind down without going far.
+          </div>
+          <div class="entry-meta">
+            <span class="badge badge-cheap">Bars ~80–120 DKK pp</span>
+            <span class="badge badge-mid">Tivoli entry ~160 DKK pp (evening)</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SUNDAY -->
+  <div class="day-block">
+    <div class="day-header">
+      <div class="day-label">Sunday</div>
+      <div class="day-date">Slow morning — departure by noon</div>
+    </div>
+    <div class="timeline">
+
+      <div class="entry tag-food">
+        <div class="entry-time">10:00 –<br>11:00</div>
+        <div class="entry-card">
+          <div class="entry-title">Breakfast: Andersen Bakery — last round</div>
+          <div class="entry-desc">One final visit. Sunday morning at Andersen is the most relaxed of the three — the city is quiet, take your time over coffee and a pastry.</div>
+          <div class="entry-meta">
+            <span class="badge badge-cheap">~80–100 DKK pp</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="entry tag-walk">
+        <div class="entry-time">11:00 –<br>12:00</div>
+        <div class="entry-card">
+          <div class="entry-title">Short harbour walk from Islands Brygge</div>
+          <div class="entry-desc">A final stroll along the Islands Brygge waterfront — the harbour baths, the bridge views, the Sunday morning calm. A quiet goodbye to the city before heading out.</div>
+          <div class="entry-meta">
+            <span class="badge badge-free">Free</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section-note">
+    <strong>Getting around</strong> — Metro + bus covers everything. A 24hr City Pass is ~130 DKK; a 72hr pass ~230 DKK. Bikes are ideal — Copenhagen is flat and very cycle-friendly, and Islands Brygge is perfectly positioned. Most places are 15–25 min by bike from home base.<br><br>
+    <strong>Weather note</strong> — Reffen (Thu) and Kastellet/harbour walk (Fri) are the most weather-sensitive. If Friday is poor, swap the harbour walk with the Saturday city sights route (Rosenborg → Christiansborg → Black Diamond are all sheltered or indoor-capable).
+  </div>
+
+</main>
+
+<footer>
+  Generated for a Thu 14 – Sun 17 May stay · Copenhagen, Denmark · All prices approximate in DKK
+</footer>
+
+</body>
+</html>
